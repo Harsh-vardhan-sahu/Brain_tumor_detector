@@ -8,11 +8,12 @@ from keras.utils import normalize, to_categorical
 from keras.models import Sequential
 from keras.layers import Conv2D, MaxPooling2D, Activation, Dropout, Flatten, Dense
 
-
+# Dataset path
 img = 'dataset/'
 dataset = []
 label = []
 
+# Get images
 no_tumor = os.listdir(img + 'no/')
 yes_tumor = os.listdir(img + 'yes/')
 
@@ -27,7 +28,7 @@ for image_name in no_tumor:
         dataset.append(np.array(image))
         label.append(0)
 
-
+# Loop for "yes tumor" images
 for image_name in yes_tumor:
     if image_name.endswith('.jpg'):
         image = cv2.imread(img + 'yes/' + image_name)
@@ -36,11 +37,11 @@ for image_name in yes_tumor:
         dataset.append(np.array(image))
         label.append(1)
 
-
+# Convert dataset and label to NumPy arrays
 dataset = np.array(dataset)
 label = np.array(label)
 
-
+# Split dataset into training and testing sets
 x_train, x_test, y_train, y_test = train_test_split(dataset, label, test_size=0.2, random_state=0)
 
 # Normalize dataset (scaling pixel values)
@@ -77,10 +78,11 @@ model.add(Dropout(0.5))
 model.add(Dense(2))
 model.add(Activation('softmax'))
 
-
+# Compile the Model
 model.compile(loss='categorical_crossentropy', optimizer='adam', metrics=['accuracy'])
 
-
+# Train the Model
 model.fit(x_train, y_train, batch_size=1, verbose=1, epochs=35, validation_data=(x_test, y_test), shuffle=True)
 
+# Save the Model
 model.save('BrainTumor40Epochs_Categorical.h5')
